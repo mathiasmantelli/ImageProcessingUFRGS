@@ -2,6 +2,7 @@
 #include "opencv2/highgui.hpp"
 #include "opencv2/imgproc.hpp"
 #include <iostream>
+#include <QImage>
 
 
 #ifndef ALGORITMOS_PI_H
@@ -27,6 +28,7 @@ public:
     Mat Histograma(Mat img);
     Mat Negative(Mat img);
     Mat Equalization(Mat img);
+    void Histograma_RGB(Mat img);
     void setImage(Mat img);
     void set_Flag_Abrir(bool n);
     void set_Flag_Copia(bool n);
@@ -35,6 +37,7 @@ public:
     bool get_Flag_Copia();
     bool get_Flag_Cinza();
     Mat getImage();
+    QImage Mat2QImage(cv::Mat const& src);
 
     Mat f(Mat img);
 
@@ -42,7 +45,7 @@ public:
     Mat image_work;
 
     bool flag_abrir,flag_copia, flag_cinza;
-
+    static QImage r,g,b;
 };
 
 #endif // ALGORITMOS_PI_H

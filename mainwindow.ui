@@ -261,11 +261,43 @@
      </item>
     </layout>
    </widget>
-   <widget class="QLabel" name="label_histograma">
+   <widget class="QLabel" name="label_histograma_r">
     <property name="geometry">
      <rect>
-      <x>520</x>
-      <y>530</y>
+      <x>20</x>
+      <y>590</y>
+      <width>256</width>
+      <height>256</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string/>
+    </property>
+    <property name="alignment">
+     <set>Qt::AlignCenter</set>
+    </property>
+   </widget>
+   <widget class="QLabel" name="label_histograma_g">
+    <property name="geometry">
+     <rect>
+      <x>310</x>
+      <y>590</y>
+      <width>256</width>
+      <height>256</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string/>
+    </property>
+    <property name="alignment">
+     <set>Qt::AlignCenter</set>
+    </property>
+   </widget>
+   <widget class="QLabel" name="label_histograma_b">
+    <property name="geometry">
+     <rect>
+      <x>590</x>
+      <y>590</y>
       <width>256</width>
       <height>256</height>
      </rect>
@@ -283,7 +315,9 @@
    <zorder>image1</zorder>
    <zorder>image2</zorder>
    <zorder>label_msg</zorder>
-   <zorder>label_histograma</zorder>
+   <zorder>label_histograma_r</zorder>
+   <zorder>label_histograma_g</zorder>
+   <zorder>label_histograma_b</zorder>
   </widget>
   <widget class="QMenuBar" name="menuBar">
    <property name="geometry">

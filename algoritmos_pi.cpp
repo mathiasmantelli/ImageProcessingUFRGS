@@ -1,5 +1,8 @@
 #include "algoritmos_pi.h"
 
+QImage Algoritmos_PI::r;
+QImage Algoritmos_PI::g;
+QImage Algoritmos_PI::b;
 
 Algoritmos_PI::Algoritmos_PI()
 {
@@ -63,7 +66,7 @@ void Algoritmos_PI::Save_Img2(Mat img){
     imwrite("histogram.jpg",img);
 }
 
-Mat Algoritmos_PI::Quantization(Mat img,int value){
+Mat Algoritmos_PI::Quantization(Mat img, int value){
     int distLevel = (256/value);
     Vec3b intensity, intensity2;
 
@@ -73,6 +76,7 @@ Mat Algoritmos_PI::Quantization(Mat img,int value){
             for(int k = 0; k < 3; k++){
                 intensity2.val[k] = floor(((float)intensity.val[k]/distLevel))*distLevel + (distLevel/2);
                 if((float)intensity2.val[k] > 255) intensity2.val[k] = 255;
+                if((float)intensity2.val[k] < 0) intensity2.val[k] = 0;
             }
             image_work.at<Vec3b>(i,j) = intensity2;
         }
@@ -146,7 +150,6 @@ Mat Algoritmos_PI::Histograma(Mat img){
         }
     }
 
-
     for (int j = 0; j < bins-1; j++)
         hmax[0] = hist[0].at<int>(j) > hmax[0] ? hist[0].at<int>(j) : hmax[0];
 
@@ -161,6 +164,63 @@ Mat Algoritmos_PI::Histograma(Mat img){
     }
     return Myimg;
 }
+
+void Algoritmos_PI::Histograma_RGB(Mat img){
+    int bins = 256;             // number of bins
+    vector<Mat> hist(3);       // array for storing the histograms
+    Mat MyimgR, MyimgG, MyimgB;
+    int hmax[3] = {0,0,0};      // peak value for each histogram
+
+    for (int i = 0; i < hist.size(); i++)
+        hist[i] = Mat::zeros(1, bins, CV_32SC1);
+
+    for (int i = 0; i < img.rows; i++){
+        for (int j = 0; j < img.cols; j++){
+            Vec3b val = img.at<Vec3b>(i,j);
+            for(int m = 0; m < 3; m++)
+                hist[m].at<int>(val.val[m]) += 1;
+        }
+    }
+
+    for (int j = 0; j < bins; j++){
+        for(int m = 0; m < 3; m++){
+            hmax[m] = hist[m].at<int>(j) > hmax[m] ? hist[m].at<int>(j) : hmax[m];
+        }
+    }
+
+    MyimgR = Mat::ones(256,bins,CV_8UC3);
+    MyimgG = Mat::ones(256,bins,CV_8UC3);
+    MyimgB = Mat::ones(256,bins,CV_8UC3);
+
+    for (int j = 0, rows = MyimgR.rows; j < bins; j++){
+        line(MyimgR,
+            Point(j, rows),
+            Point(j, rows - (hist[2].at<int>(j) * rows/hmax[2])),
+            Scalar(0,0,255),
+            1, 8, 0);
+
+        line(MyimgG,
+            Point(j, rows),
+            Point(j, rows - (hist[1].at<int>(j) * rows/hmax[1])),
+            Scalar(0,255,0),
+            1, 8, 0);
+
+        line(MyimgB,
+            Point(j, rows),
+            Point(j, rows - (hist[0].at<int>(j) * rows/hmax[0])),
+            Scalar(255,0,0),
+            1, 8, 0);
+    }
+    imshow("Red", MyimgR);
+    imshow("Green", MyimgG);
+    imshow("Blue", MyimgB);
+
+    r = Mat2QImage(MyimgR);
+    g = Mat2QImage(MyimgG);
+    b = Mat2QImage(MyimgB);
+}
+
+
 
 void Algoritmos_PI::set_Flag_Abrir(bool n){flag_abrir = n;}
 void Algoritmos_PI::set_Flag_Copia(bool n){flag_copia = n;}
@@ -271,4 +331,14 @@ Mat Algoritmos_PI:: f(Mat img){
     }
 
     return image_work;
+}
+
+QImage Algoritmos_PI::Mat2QImage(cv::Mat const& src)
+{
+     cv::Mat temp; // make the same cv::Mat
+     cvtColor(src, temp,CV_BGR2RGB); // cvtColor Makes a copt, that what i need
+     QImage dest((const uchar *) temp.data, temp.cols, temp.rows, temp.step, QImage::Format_RGB888);
+     dest.bits(); // enforce deep copy, see documentation
+     // of QImage::QImage ( const uchar * data, int width, int height, Format format )
+     return dest;
 }

@@ -55,6 +55,9 @@ private slots:
 
     void on_buttom_equalization_clicked();
 
+    QImage open_image();
+
+
 private:
     Ui::MainWindow *ui;
     QImage imagem;
